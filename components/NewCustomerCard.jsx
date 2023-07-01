@@ -23,7 +23,7 @@ export default function NewCustomerCard({companies}) {
 
     const route = useRouter()
     const [dto, setDto] = useState(data)
-
+    const [allCompanies, setAllCompanies] = useState(companies)
 
     async function handleSubmit() {
 
@@ -149,27 +149,29 @@ export default function NewCustomerCard({companies}) {
             />
 
 
-                if (companies != null){
-                companies.map(company => (
-                    <TextField
-                        select
-                        fullWidth
-                        variant="outlined"
-                        name="uniqueCompaniesId"
-                        label="Company"
-                        key={company.id}
-                        defaultValue=""
-                        onChange={e => setDto({...dto, uniqueCompaniesId: [e.target.value]})}
-                    >
-
-                        <MenuItem
+            {
+                allCompanies != null ? allCompanies.map(company => (
+                        <TextField
+                            select
+                            fullWidth
+                            variant="outlined"
+                            name="uniqueCompaniesId"
+                            label="Company"
                             key={company.id}
-                            value={company.id}>
-                            {company.title}
-                        </MenuItem>
+                            defaultValue=""
+                            onChange={e => setDto({...dto, uniqueCompaniesId: [e.target.value]})}
+                        >
 
-                    </TextField>
-                ))}
+                            <MenuItem
+                                key={company.id}
+                                value={company.id}>
+                                {company.title}
+                            </MenuItem>
+
+                        </TextField>
+                    ))
+                    : ('')
+            }
 
 
         </Box>
