@@ -1,26 +1,36 @@
 
-'use client'
-import Panel from "@/components/crm/Panel"
-import { Suspense } from "react"
-import Table from "@/components/crm/Table"
-import { getCompanies } from "@/lib/getCompanies"
-import { columns } from "@/components/crm/const/companyColumns"
+import { getServerSession } from "next-auth/next"
+import { authOptions } from "@app/api/auth/[...nextauth]/route";
+import SearchPanel from "@components/crm/SearchPanel"
+import Companies from "@components/Companies"
 
-export default async function Company () {
+const link = "/crm/companies/new"
 
-  const companies = await getCompanies()
+export default async function ShowCompanies({ searchParams }) {
+
+  const session = await getServerSession(authOptions)
+
+  if (!session) {
+    return
+  }
+
+  const { accessToken } = session
+
+  const req = await fetch(process.env.API_GET_COMPANIES, {
+    headers: {
+      'Authorization': `Bearer ${accessToken}`
+    }
+  })
+
+  const companies = await req.json()
 
   return (
     <>
-      <Panel />
-      <Suspense fallback={<div>Loading...</div>}>
-          <Table
-            columns={columns}
-            rows={companies}
-          />
-        </Suspense>
+      <SearchPanel link={link} />
+      <Companies companies={companies} />
+
     </>
-    
+
   )
 }
 

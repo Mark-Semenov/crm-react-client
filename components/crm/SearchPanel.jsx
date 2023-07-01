@@ -1,32 +1,43 @@
-'use client'
-import { Box, Container, Paper } from "@mui/material"
-import { Button } from "@mui/material"
-import { Divider } from "@mui/material"
-import { InputBase } from '@mui/material';
+
+'use client';
+
+import { Box, Paper } from "@mui/material"
+import { Button, Divider, InputBase } from "@mui/material"
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
+import { useRouter } from "next/navigation";
 
 
-export const Panel = () => {
+export const SearchPanel = ({ link }) => {
+
+  const route = useRouter()
 
   return (
     <Box sx={{
-      display: 'flex', 
+      display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
       mb: 2
     }}>
       <Divider />
-      <Button sx={{ height: '60px', mr: 2, width: '150px' }} variant="outlined">New</Button>
+      <Button
+        sx={{
+          height: '60px',
+          mr: 2,
+          width: '150px'
+        }}
+        onClick={() => route.push(link)}
+        variant="outlined">New</Button>
       <Paper
         component="form"
-        elevation={1}
+        elevation={0}
         sx={{
           display: 'flex',
           height: '60px',
           alignItems: 'center',
           width: '100%',
+          border: '1px solid lightgray'
 
         }}>
         <IconButton sx={{ p: '10px' }} aria-label="menu">
@@ -46,4 +57,4 @@ export const Panel = () => {
 }
 
 
-export default Panel
+export default SearchPanel

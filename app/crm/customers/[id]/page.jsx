@@ -1,21 +1,39 @@
 
-'use client'
-import { getCustomerById } from "@/lib/getCustomerById";
-import { DtoCard } from "@/components/crm/DtoCard";
-import { Suspense } from "react";
+import InfoPanel from "@components/InfoPanel";
+import Customer from "@components/Customer";
+import { getServerSession } from "next-auth/next"
+import { authOptions } from "@app/api/auth/[...nextauth]/route";
 
 
-export default async function Customer({ params: { id } }) {
+export default async function Card({ params: { id } }) {
 
-    const customer = await getCustomerById(id)
+    const session = await getServerSession(authOptions)
+    const { accessToken } = session
+
+    const req = await fetch(`${process.env.API_GET_FULL_CUSTOMER}${id}`, {
+        headers: {
+            'Authorization': `Bearer ${accessToken}`
+        }
+    })
+
+    const getCompanies = await fetch(process.env.API_GET_COMPANIES, {
+        headers: {
+            'Authorization': `Bearer ${accessToken}`
+        }
+    })
+
+    const companies = await getCompanies.json()
+
+    const customer = await req.json()
+
+    const { firstName, lastName } = customer
+    const fullName = firstName + ' ' + lastName
 
     return (
         <>
-            <Suspense fallback={<div>Loading...</div>}>
-                <DtoCard customer={customer}></DtoCard>    
-            </Suspense>
-
-
+            <InfoPanel name={fullName} >
+                <Customer customer={customer} companies={companies} />
+            </InfoPanel>
         </>
 
     )

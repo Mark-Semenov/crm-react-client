@@ -1,9 +1,9 @@
-
-import { Button } from "@mui/material";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 
 export const columns = [
+    { field: 'id', headerName: 'Id', width: 100, 
+     valueGetter: ({row}) => row.id},
     { field: 'firstName', headerName: 'Firstname', width: 100 },
     { field: 'lastName', headerName: 'Lastname', width: 100 },
     { field: 'emails', headerName: 'Email', width: 100 },
@@ -11,14 +11,14 @@ export const columns = [
     { field: 'post', headerName: 'Post', width: 150 },
     { field: 'type', headerName: 'Type', width: 80 },
     { field: 'status', headerName: 'Status', width: 80 },
-    { renderCell: (params) => <CustomerInfo params={params} /> },
+    { field: 'details', headerName: 'Details', renderCell: (params) => <CustomerInfo params={params} /> },
 ];
 
 
 
 const CustomerInfo = ({ params }) => {
-    const router = useRouter()
+    const id = params.id
     return (
-        <Button onClick={() => router.push(`/crm/customers/${params.id}`)}>More</Button>
+        <Link type="button" href={`/crm/customers/${id}`}>More</Link>
     );
 };

@@ -1,33 +1,30 @@
 
-'use client'
+'use client';
 
-import LeftBar from "@/components/crm/LeftBar";
-import { CssBaseline, Box, Container } from "@mui/material"
+import { CssBaseline, Box, Toolbar } from "@mui/material"
 
-import TopBar from "@/components/TopBar";
+import { CrmNavigation } from "@components/CrmNavigation";
+import { Protected } from "@components/Protected";
+import { useSession } from "next-auth/react"
+
 
 export default function CrmLayout({ children }) {
+
+    const { data: session } = useSession()
 
     return (
         <>
             <CssBaseline />
-            <TopBar />
-            <main>
-                <Box sx={{
-                    mt: '100px',
-                    display: 'flex',
-                    justifyContent: 'space-between'
-                }}>
-                    <Box>
-                        <LeftBar />
-                    </Box>
-                    <Container maxWidth='lg'>
+            <Box sx={{ display: 'flex' }}>
+                <CrmNavigation session={session} />
+                <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+                    <Toolbar />
+                    <Protected>
                         {children}
-                    </Container>
+                    </Protected>
 
                 </Box>
-
-            </main>
+            </Box>
 
         </>
     )

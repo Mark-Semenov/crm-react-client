@@ -1,56 +1,89 @@
 import {
-    Box, Drawer, Toolbar, List, ListItem,
-    ListItemButton, ListItemIcon, ListItemText,
+    Box, Toolbar, List, ListItem,
+    ListItemButton, ListItemIcon, ListItemText, Typography,
 } from '@mui/material';
 
-import PeopleIcon from '@mui/icons-material/People';
-import BusinessIcon from '@mui/icons-material/Business';
+import MuiDrawer from '@mui/material/Drawer';
+import { styled } from '@mui/material/styles';
+import Logo from '@components/Logo';
+
+const drawerWidth = 270;
+const openedMixin = (theme) => ({
+    width: drawerWidth,
+    transition: theme.transitions.create('width', {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.enteringScreen,
+    }),
+    overflowX: 'hidden',
+});
+
+const closedMixin = (theme) => ({
+    transition: theme.transitions.create('width', {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.leavingScreen,
+    }),
+    overflowX: 'hidden',
+    width: `calc(${theme.spacing(7)} + 1px)`,
+    [theme.breakpoints.up('sm')]: {
+        width: `calc(${theme.spacing(8)} + 1px)`,
+    },
+});
+
+const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
+    ({ theme, open }) => ({
+        width: drawerWidth,
+        flexShrink: 0,
+        whiteSpace: 'nowrap',
+        boxSizing: 'border-box',
+        ...(open && {
+            ...openedMixin(theme),
+            '& .MuiDrawer-paper': openedMixin(theme),
+        }),
+        ...(!open && {
+            ...closedMixin(theme),
+            '& .MuiDrawer-paper': closedMixin(theme),
+        }),
+    }),
+);
 
 
-export const LeftBar = () => {
 
-    const menuLinks = [
-        {
-            id: 1,
-            name: 'Customers',
-            link: '/crm/customers',
-            icon: <PeopleIcon />,
-        },
-        {
-            id: 2,
-            name: 'Companies',
-            link: '/crm/companies',
-            icon: <BusinessIcon />
-        }
-    ]
+export const LeftBar = ({ open, links }) => {
+
 
     return (
-        <Box>
-            <Drawer
-                variant="permanent"
-                sx={{
-                    width: '250px',
-                    flexShrink: 0,
-                    backgroundColor: '#fcfcfc',
-                    [`& .MuiDrawer-paper`]: { width: '250px', boxSizing: 'border-box' },
-                }}>
-                <Toolbar />
-                <Box sx={{ overflow: 'auto' }}>
-                    <List>
-                        {menuLinks.map((item) => (
-                            <ListItem key={item.id}>
-                                <ListItemButton href={`${item.link}`} >
-                                    <ListItemIcon>
-                                        {item.icon}
-                                    </ListItemIcon>
-                                    <ListItemText primary={item.name} />
-                                </ListItemButton>
-                            </ListItem>
-                        ))}
-                    </List>
-                </Box>
-            </Drawer>
-        </Box>
+
+        <Drawer variant="permanent" open={open}>
+            <Toolbar >
+                <Logo/>
+            </Toolbar>
+            <List>
+                {links.map((item) => (
+                    <ListItem key={item.id} sx={{ display: 'block' }}>
+                        <ListItemButton
+                            sx={{
+                                minHeight: 48,
+                                justifyContent: open ? 'initial' : 'center',
+                                px: 2.5,
+                            }}
+                            href={`${item.link}`} >
+                            <ListItemIcon
+                                sx={{
+                                    minWidth: 0,
+                                    mr: open ? 3 : 'auto',
+                                    justifyContent: 'center',
+                                }}
+                            >
+                                {item.icon}
+                            </ListItemIcon>
+                            <ListItemText sx={{ opacity: open ? 1 : 0 }} primary={item.name} />
+                        </ListItemButton>
+                    </ListItem>
+                ))}
+            </List>
+
+        </Drawer>
+
     )
 }
 
